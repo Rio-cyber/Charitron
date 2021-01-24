@@ -63,6 +63,68 @@ def uploadtogcp(filename):
     print('File {} uploaded to {}.'.format(source_file_name, destination_blob_name))
 
 
+@app.route("/register", methods=["POST"])
+def register():
+
+    request_json = request.get_json()
+    mongostr = os.environ.get('MONGOSTR')
+    client = pymongo.MongoClient(mongostr)
+    db =  client['charitron']
+
+    col = db.users
+    results = []
+    maxid = 0
+    for x in col.find():
+        id = x["uid"]
+        maxid +=1
+    id = str(maxid+1)
+
+    payload = {}
+    if request_json:
+        for x in col.find():
+            if x['email'] == request_json['email']:
+                retjson = {}
+
+                # retjson['dish'] = userid
+                retjson['mongoresult'] = "user already exists"
+                # retjson['id'] = id
+
+                return json.dumps(retjson)
+
+
+
+        payload["uid"] = id
+        payload["name"] = request_json['name']
+        payload["email"] = request_json['email']
+        payload["password"] = request_json['password']
+        payload["username"] =  request_json['username']
+        payload["imgurl"] = request_json['imgurl']
+
+                
+        result=col.insert_one(payload)
+
+        retjson = {}
+
+        # retjson['dish'] = userid
+        retjson['result'] = "successfully added"
+        retjson['id'] = id
+        retjson['name'] = request_json['name']
+
+        return json.dumps(retjson)
+
+
+    retstr = "action not done"
+
+    if request.args and 'message' in request.args:
+        return request.args.get('message')
+    elif request_json and 'message' in request_json:
+        return request_json['message']
+    else:
+        return retstr
+
+
+
+
 @app.route("/login", methods=["POST"])
 def login():
     request_json = request.get_json()
