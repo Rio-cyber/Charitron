@@ -72,4 +72,4 @@ def recognize_face(f1, f2):
 ##encoding = face_recognition.face_encodings(image)[0]
 ##print(str(encoding))
 ##print(compare(encoding, "test.jpg"))
-print(compare(encoding, "test1.jpg"))
+##print(compare(encoding, "test1.jpg"))

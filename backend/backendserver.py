@@ -63,6 +63,58 @@ def uploadtogcp(filename):
     print('File {} uploaded to {}.'.format(source_file_name, destination_blob_name))
 
 
+@app.route("/login", methods=["POST"])
+def login():
+    request_json = request.get_json()
+    mongostr = os.environ.get('MONGOSTR')
+    client = pymongo.MongoClient(mongostr)
+    
+    db = client['charitron']
+    col = db.users
+    results = []
+    maxid = 0
+    for x in col.find():
+        id = x["uid"]
+        maxid +=1
+    id = str(maxid+1)
+    retjson = {}
+    
+    payload = {}
+    if request_json:
+        for x in col.find():
+            if x['email'] == request_json['email']:
+                if x['password'] == request_json['password']:
+
+                    
+
+                    # retjson['dish'] = userid
+                    retjson['result'] = "success"
+                    retjson['id'] = x['id']
+                    retjson['name'] = x['name']
+ 
+                    
+                    return json.dumps(retjson)
+
+
+
+       
+        retjson['result'] = "login fail"
+
+        return json.dumps(retjson)
+
+
+    retstr = "action not done"
+
+    if request.args and 'message' in request.args:
+        return request.args.get('message')
+    elif request_json and 'message' in request_json:
+        return request_json['message']
+    else:
+        return retstr
+
+
+
+
 @app.route("/file_upload", methods=["POST"])
 def fileupload():
 
