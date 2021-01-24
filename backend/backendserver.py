@@ -18,7 +18,7 @@ with open('credentials.json', 'r') as f:
 mongostr = creds["mongostr"]
 client = MongoClient(mongostr)
 
-db = client["remind"]
+db = client["charitron"]
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
